@@ -2,6 +2,8 @@ package co2123.gamestudio.controller;
 
 import co2123.gamestudio.GameStudioApplication;
 import co2123.gamestudio.model.*;
+import co2123.gamestudio.repository.StudioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -14,16 +16,24 @@ import java.util.List;
 
 @Controller
 public class AddEditController {
+    @Autowired
+    private StudioRepository studioRepo;
 
-    public static Studio findStudio(int id){
+    public Studio findStudio(int id){
         Studio foundStudio = null;
-        for(Studio a :  GameStudioApplication.studioList) {
+//        for(Studio a :  GameStudioApplication.studioList) {
+//            if(a.getId() == id) {
+//                foundStudio = a;
+//            }
+//        }
+        for(Studio a :  studioRepo.findAll()) {
             if(a.getId() == id) {
                 foundStudio = a;
             }
         }
         return foundStudio;
     }
+
 
     @RequestMapping("editStudio")
     public String editStudioForm(@RequestParam Integer id, Model model) {

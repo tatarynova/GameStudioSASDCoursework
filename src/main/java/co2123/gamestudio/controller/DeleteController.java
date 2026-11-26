@@ -2,19 +2,27 @@ package co2123.gamestudio.controller;
 
 import co2123.gamestudio.GameStudioApplication;
 import co2123.gamestudio.model.*;
+import co2123.gamestudio.repository.StudioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Optional;
+
 @Controller
 public class DeleteController {
-
+    @Autowired private StudioRepository studioRepo;
 
     @RequestMapping("/deleteStudio")
     public String deleteStudio(@RequestParam("id") Integer id) {
-        Studio foundStudio = AddEditController.findStudio(id);
-        if(foundStudio != null){
-            GameStudioApplication.studioList.remove(foundStudio);
+//        Studio foundStudio = AddEditController.findStudio(id);
+        Optional<Studio> foundStudio = studioRepo.findById(id);
+//        if(foundStudio != null){
+//            GameStudioApplication.studioList.remove(foundStudio);
+//        }
+        if(foundStudio.isPresent()){
+            studioRepo.delete(foundStudio.get());
         }
         return "redirect:/admin";
     }
