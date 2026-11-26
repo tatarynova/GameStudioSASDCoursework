@@ -1,0 +1,68 @@
+package co2123.gamestudio.model;
+
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+@Entity
+public class Review {
+    @Id
+    @GeneratedValue
+    private int id;
+    private String reviewerName;
+    private int rating;
+    private String comment;
+    private LocalDateTime reviewDate;
+
+    @ManyToOne
+    @JoinColumn
+    private Game game;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getReviewerName() {
+        return reviewerName;
+    }
+
+    public void setReviewerName(String reviewerName) {
+        this.reviewerName = reviewerName;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public LocalDateTime getReviewDate() {
+        return reviewDate;
+    }
+
+    public void setReviewDate(LocalDateTime reviewDate) {
+        this.reviewDate = reviewDate;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+}
+
