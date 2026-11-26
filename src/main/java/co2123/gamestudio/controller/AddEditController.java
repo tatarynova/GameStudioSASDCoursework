@@ -13,52 +13,50 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class AddEditController {
+
     @Autowired
     private StudioRepository studioRepo;
 
-    public Studio findStudio(int id){
-        Studio foundStudio = null;
-//        for(Studio a :  GameStudioApplication.studioList) {
-//            if(a.getId() == id) {
-//                foundStudio = a;
-//            }
-//        }
-        for(Studio a :  studioRepo.findAll()) {
-            if(a.getId() == id) {
-                foundStudio = a;
-            }
-        }
-        return foundStudio;
-    }
-
-
+//    updated
     @RequestMapping("editStudio")
-    public String editStudioForm(@RequestParam Integer id, Model model) {
-        Studio foundStudio = findStudio(id);
+    public String editStudioForm(@RequestParam("id") Integer id, Model model) {
 
-        if(foundStudio == null) {
+        Optional<Studio> foundStudio = studioRepo.findById(id);
+//        Studio foundStudio = findStudio(id);
+        if (foundStudio.isEmpty()) {
             return "redirect:/admin";
         }
+//        if(foundStudio == null) {
+//            return "redirect:/admin";
+//        }
         model.addAttribute("studio", foundStudio);
         return "forms/editStudio";
     }
 
-
+//    updated
     @RequestMapping("editedStudio")
-    public String submittedEditForm(@RequestParam Integer id, @ModelAttribute Studio studio, Model model) {
-        Studio foundStudio = findStudio(id);
+    public String submittedEditForm(@RequestParam("id") Integer id, @ModelAttribute Studio studio, Model model) {
+        Optional<Studio> foundStudio = studioRepo.findById(id);
+        if (foundStudio.isEmpty()) {
+            return "redirect:/admin";
+        }
+//        Studio foundStudio = findStudio(id);
+        Studio existingStudio = foundStudio.get();
 
-        foundStudio.setName(studio.getName());
-        foundStudio.setHeadquarters(studio.getHeadquarters());
-        foundStudio.setSpecialism(studio.getSpecialism());
+        existingStudio.setName(studio.getName());
+        existingStudio.setHeadquarters(studio.getHeadquarters());
+        existingStudio.setSpecialism(studio.getSpecialism());
+//        foundStudio.setName(foundStudio.get());
+//        foundStudio.setHeadquarters(studio.getHeadquarters());
+//        foundStudio.setSpecialism(studio.getSpecialism());
 
         model.addAttribute("studio", foundStudio);
         return "redirect:/studio?id=" + id;
     }
-
 
 
     @RequestMapping("editStudioProfile")
