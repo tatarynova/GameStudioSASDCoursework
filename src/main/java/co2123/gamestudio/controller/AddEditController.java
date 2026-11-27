@@ -2,6 +2,7 @@ package co2123.gamestudio.controller;
 
 import co2123.gamestudio.GameStudioApplication;
 import co2123.gamestudio.model.*;
+import co2123.gamestudio.repository.AwardRepository;
 import co2123.gamestudio.repository.StudioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,8 @@ public class AddEditController {
 
     @Autowired
     private StudioRepository studioRepo;
+    @Autowired
+    private AwardRepository awardRepo;
 
 //    updated
     @RequestMapping("editStudio")
@@ -241,37 +244,49 @@ public class AddEditController {
         model.addAttribute("studio", foundStudio);
         return "redirect:/studio?id=" + studioid;
     }
+
 //    AWARD
 
     @RequestMapping("newAward")
     public String newAward(@RequestParam Integer studioid, Model model) {
-        Studio foundStudio = findStudio(studioid);
-        if (foundStudio == null) {
+        Optional<Studio> foundStudio = studioRepo.findById(studioid);
+        if (foundStudio.isEmpty()) {
             return "redirect:/admin";
         }
+//        Studio foundStudio = findStudio(studioid);
+//        if (foundStudio == null) {
+//            return "redirect:/admin";
+//        }
 
-        model.addAttribute("studio", foundStudio);
+        model.addAttribute("studio", foundStudio.get());
         model.addAttribute("award", new Award());
         return "forms/newAward";
     }
 
     @RequestMapping("addAward")
     public String addAward(@RequestParam Integer studioid, @ModelAttribute Award award, Model model) {
-        Studio foundStudio = findStudio(studioid);
-        if (foundStudio == null) {
+        Optional<Studio> foundStudio = studioRepo.findById(studioid);
+        if (foundStudio.isEmpty()) {
             return "redirect:/admin";
         }
+//        Studio foundStudio = findStudio(studioid);
+//        if (foundStudio == null) {
+//            return "redirect:/admin";
+//        }
 
-        award.setStudio(foundStudio);
+//        award.setStudio(foundStudio);
+        Studio existingStudio = foundStudio.get();
+        award.setStudio(existingStudio);
 //        award.setId(GameStudioApplication.awardList.size()+1);
-        GameStudioApplication.awardList.add(award);
+        awardRepo.save(award);
+//        GameStudioApplication.awardList.add(award);
 
-        if(foundStudio.getAwards() == null || foundStudio.getAwards().isEmpty()){
-            foundStudio.setAwards(new ArrayList<>());
+        if(existingStudio.getAwards() == null || existingStudio.getAwards().isEmpty()){
+            existingStudio.setAwards(new ArrayList<>());
         }
-        foundStudio.getAwards().add(award);
+        existingStudio.getAwards().add(award);
 
-        model.addAttribute("studio", foundStudio);
+        model.addAttribute("studio", existingStudio);
         return "redirect:/studio?id=" + studioid;
     }
 

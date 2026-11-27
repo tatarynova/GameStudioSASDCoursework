@@ -1,6 +1,7 @@
 package co2123.gamestudio;
 
 import co2123.gamestudio.model.*;
+import co2123.gamestudio.repository.AwardRepository;
 import co2123.gamestudio.repository.StudioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -15,13 +16,16 @@ import java.util.List;
 @SpringBootApplication
 public class GameStudioApplication implements CommandLineRunner {
 
-    public static List<Award> awardList = new ArrayList<>();
+    @Autowired private AwardRepository awardRepo;
+//    public static List<Award> awardList = new ArrayList<>();
+
     public static List<Game> gameList = new ArrayList<>();
     public static List<Screenshot> screenshotList = new ArrayList<>();
     public static List<Review> reviewList = new ArrayList<>();
     public static List<Genre> genreList = new ArrayList<>();
-//    public static List<Studio> studioList = new ArrayList<>();
+
     @Autowired private StudioRepository studioRepo;
+//    public static List<Studio> studioList = new ArrayList<>();
 //    public static List<StudioProfile> studioprofileList = new ArrayList<>();
 
     public static void main(String[] args) {
@@ -85,7 +89,7 @@ public class GameStudioApplication implements CommandLineRunner {
         studio.setGames(new ArrayList<>());
         studio.getGames().add(sillyChess);
         studio.getGames().add(funkyAdventure);
-        studioList.add(studio);
+        studioRepo.save(studio);
 
         //Creating 2 Reviews
         Review review1 = new Review();
@@ -136,8 +140,10 @@ public class GameStudioApplication implements CommandLineRunner {
         award2.setYear(2024);
         award2.setStudio(studio);
 
-        awardList.add(award1);
-        awardList.add(award2);
+        awardRepo.save(award1);
+        awardRepo.save(award2);
+//        awardList.add(award1);
+//        awardList.add(award2);
 
 
         //Creating another studio to populate the database
@@ -206,7 +212,8 @@ public class GameStudioApplication implements CommandLineRunner {
         studio2.getGames().add(marketManager);
         studio2.getGames().add(magicGarden);
         studio2.getGames().add(codeQuest);
-        studioList.add(studio2);
+        studioRepo.save(studio2);
+//        studioList.add(studio2);
 
         //Creating 3 Reviews
         Review review3 = new Review();
@@ -267,7 +274,8 @@ public class GameStudioApplication implements CommandLineRunner {
         award3.setYear(2026);
         award3.setStudio(studio2);
 
-        awardList.add(award3);
+        awardRepo.save(award3);
+//        awardList.add(award3);
 
 
         //Creating another Studio
@@ -340,7 +348,8 @@ public class GameStudioApplication implements CommandLineRunner {
         studio3.getGames().add(motoBear);
         studio3.getGames().add(lanternLibrary);
 
-        studioList.add(studio3);
+        studioRepo.save(studio3);
+//        studioList.add(studio3);
 
         //Creating 3 Reviews
         Review review6 = new Review();
@@ -393,7 +402,8 @@ public class GameStudioApplication implements CommandLineRunner {
         award4.setTitle("Best Narrative Adventure");
         award4.setYear(2026);
         award4.setStudio(studio3);
-        awardList.add(award4);
+        awardRepo.save(award4);
+//        awardList.add(award4);
 
 
         //Additional code for ArrayLists
