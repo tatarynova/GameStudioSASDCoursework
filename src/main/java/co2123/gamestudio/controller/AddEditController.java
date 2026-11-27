@@ -33,7 +33,7 @@ public class AddEditController {
 //        if(foundStudio == null) {
 //            return "redirect:/admin";
 //        }
-        model.addAttribute("studio", foundStudio);
+        model.addAttribute("studio", foundStudio.get());
         return "forms/editStudio";
     }
 
@@ -50,25 +50,32 @@ public class AddEditController {
         existingStudio.setName(studio.getName());
         existingStudio.setHeadquarters(studio.getHeadquarters());
         existingStudio.setSpecialism(studio.getSpecialism());
+        studioRepo.save(existingStudio);
 //        foundStudio.setName(foundStudio.get());
 //        foundStudio.setHeadquarters(studio.getHeadquarters());
 //        foundStudio.setSpecialism(studio.getSpecialism());
 
-        model.addAttribute("studio", foundStudio);
+        model.addAttribute("studio", existingStudio);
         return "redirect:/studio?id=" + id;
     }
 
-
+//    updated
     @RequestMapping("editStudioProfile")
     public String editStudioProfileForm(@RequestParam Integer id, Model model) {
-        Studio foundStudio = findStudio(id);
-        if (foundStudio == null) {
+        Optional<Studio> foundStudio = studioRepo.findById(id);
+        if (foundStudio.isEmpty()) {
             return "redirect:/admin";
         }
+//        Studio foundStudio = findStudio(id);
+//        if (foundStudio == null) {
+//            return "redirect:/admin";
+//        }
 
-        StudioProfile profile = foundStudio.getProfile();
+        StudioProfile profile = foundStudio.get().getProfile();
+//        StudioProfile profile = foundStudio.getProfile();
+
         if(profile == null){
-            model.addAttribute("profile",new StudioProfile());
+            model.addAttribute("profile", new StudioProfile());
         } else {
             model.addAttribute("profile", profile);
         }
@@ -76,29 +83,43 @@ public class AddEditController {
         return "forms/editStudioProfile";
     }
 
+//    updated
     @RequestMapping("editedStudioProfile")
     public String submittedProfileEditForm(@RequestParam Integer id, @ModelAttribute StudioProfile profile, Model model) {
-        Studio foundStudio = findStudio(id);
-        if (foundStudio == null) {
+        Optional<Studio> foundStudio = studioRepo.findById(id);
+        if (foundStudio.isEmpty()) {
             return "redirect:/admin";
         }
+//        Studio foundStudio = findStudio(id);
+//        if (foundStudio == null) {
+//            return "redirect:/admin";
+//        }
 
-        if(foundStudio.getProfile() == null){
+        Studio existingStudio = foundStudio.get();
+        StudioProfile existingProfile = existingStudio.getProfile();
+
+        if(existingProfile == null){
 //            profile.setId(GameStudioApplication.studioprofileList.size()+1);
-            foundStudio.setProfile(profile);
+            existingStudio.setProfile(profile);
 //            GameStudioApplication.studioprofileList.add(profile);
         } else {
 //            GameStudioApplication.studioprofileList.remove(foundStudio.getProfile());
 //            GameStudioApplication.studioprofileList.add(profile);
-            foundStudio.getProfile().setBio(profile.getBio());
-            foundStudio.getProfile().setSocialMediaHandle(profile.getSocialMediaHandle());
-            foundStudio.getProfile().setWebsite(profile.getWebsite());
+
+            existingProfile.setBio(profile.getBio());
+            existingProfile.setWebsite(profile.getWebsite());
+            existingProfile.setSocialMediaHandle(profile.getSocialMediaHandle());
+//            foundStudio.getProfile().setBio(profile.getBio());
+//            foundStudio.getProfile().setSocialMediaHandle(profile.getSocialMediaHandle());
+//            foundStudio.getProfile().setWebsite(profile.getWebsite());
         }
 
-        model.addAttribute("studio", foundStudio);
+        model.addAttribute("studio", existingStudio);
+        studioRepo.save(existingStudio);
         return "redirect:/studio?id=" + id;
     }
 
+//    GAME
 
     @RequestMapping("newGame")
     public String newGameForm(@RequestParam Integer id, Model model) {
@@ -140,7 +161,7 @@ public class AddEditController {
         return "redirect:/studio?id=" + studioid;
     }
 
-
+//    REVIEW
 
     @RequestMapping("newReview")
     public String newReview(@RequestParam Integer studioid, @RequestParam Integer gameid, Model model) {
@@ -188,6 +209,7 @@ public class AddEditController {
         return "redirect:/studio?id=" + studioid;
     }
 
+//    SCREENSHOT
     @RequestMapping("newScreenshot")
     public String newScreenshot(@RequestParam Integer studioid, Model model) {
         Studio foundStudio = findStudio(studioid);
@@ -219,6 +241,7 @@ public class AddEditController {
         model.addAttribute("studio", foundStudio);
         return "redirect:/studio?id=" + studioid;
     }
+//    AWARD
 
     @RequestMapping("newAward")
     public String newAward(@RequestParam Integer studioid, Model model) {
@@ -253,6 +276,7 @@ public class AddEditController {
     }
 
 
+//    GAME
 
     @RequestMapping("editGame")
     public String editGameForm(@RequestParam Integer studioid, @RequestParam Integer gameid, Model model) {
@@ -316,6 +340,7 @@ public class AddEditController {
         model.addAttribute("studio", foundStudio);
         return "redirect:/studio?id=" + studioid;
     }
+//    REVIEW
 
     @RequestMapping("editReview")
     public String editReview(@RequestParam Integer studioId, @RequestParam Integer reviewId, Model model) {
@@ -365,6 +390,7 @@ public class AddEditController {
         model.addAttribute("studio", foundStudio);
         return "redirect:/studio?id=" + studioId;
     }
+//    SCREENSHOT
 
     @RequestMapping("editScreenshot")
     public String editScreenshot(@RequestParam Integer screenshotId, Model model) {
@@ -424,6 +450,7 @@ public class AddEditController {
         model.addAttribute("award", foundAward);
         return "forms/editAward";
     }
+//    AWARD
 
     @RequestMapping("editedAward")
     public String editedAward(@RequestParam Integer awardId, @ModelAttribute Award award, Model model) {
